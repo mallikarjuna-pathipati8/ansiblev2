@@ -10,6 +10,7 @@
         name:
           - maven
           - java-25-openjdk-devel
+          - mysql
         state: present
 
     - name: create system user
@@ -56,3 +57,24 @@
     - name: print mvn version
       debug:
         msg: "{{ mvn_version }}"
+
+    - name: build shipping
+      command: mvn clean package
+      args:
+        chdir: /app
+
+    - name: move shipping file jar
+      command: mv target/shipping.jar shipping.jar
+      args:
+        chdir: /app
+
+    - name: check cities data exist or not
+      command: mysql -h "{{ mysql_host }}" -u root -p{{ mysql_root_password }} -N -B -e "SELECT COUNT(*) FROM cities.cities;"
+      register: cities_count
+      ignore_errors: true
+      tags:
+        - mysql
+
+    - name: print the cities count
+      debug:
+        msg: "{{ cities_count  }}"
