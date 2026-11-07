@@ -25,6 +25,4 @@
 
     - name: print  list item
       debug:
-        name: print item
-        debug:
-          msg: "{{ listitem[0] }}"
+        msg: "{{ listitem[0] }}"
