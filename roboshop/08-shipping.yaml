@@ -45,8 +45,14 @@
       unarchive:
         src: /tmp/shipping.zip
         dest: /app
+        remore_src: yes
 
     - name: maven version
       command: java -version
       args:
         chdir: /app
+      register: mvn_version
+
+    - name: print mvn version
+      debug:
+        msg: "{{ mvn_version }}"
