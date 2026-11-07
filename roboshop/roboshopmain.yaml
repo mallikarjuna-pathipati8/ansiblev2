@@ -7,7 +7,7 @@
     instance_type: t3.small
     image_id: ami-0055977a6e828a4f4 # Replace with your target AMI ID
     instnace: ["mongodb", "redis"]
-    action: create
+    ec2_action: create
     domain_name: "arjundaws92s.store"
     hosted_zone: "Z08325212T4ZKWPRKKKQC"
 
@@ -22,20 +22,20 @@
           - "roboshop-{{ item }}"
         image_id: "{{ image_id }}"
       loop: "{{ instnace }}"
-      when: action =="create"
+      when: ec2_action =="create"
       register: ec2_output
 
     - name: Create or update Route 53 A record
       amazon.aws.route53:
         state: present
-        zone: "{{ hosted_zone }}"
+        zone: "arjundaws92s.store"
         record: "{{item.item}}.{{ domain_name }}"
         type: A
         ttl: 1
         value: "{{ item.instances[0].private_ip_address }}"
         overwrite: true
       loop: "{{ ec2_output.results }}"
-      when: action == "create"
+      when: ec2_action == "create"
 
     - name: delete Route 53 A record
       amazon.aws.route53:
@@ -45,7 +45,7 @@
         type: A
         ttl: 1
         loop: "{{ instnace }}"
-      when: action == "delete"
+      when: ec2_action == "delete"
 
     - name: delete EC2 instance
       amazon.aws.ec2_instance:
@@ -54,4 +54,4 @@
         region: "{{ region }}"
         wait: false
       loop: "{{ instnace }}"
-      when: action =="delete"
+      when: ec2_action =="delete"
