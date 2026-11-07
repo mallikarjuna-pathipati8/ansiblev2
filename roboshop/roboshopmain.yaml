@@ -54,4 +54,4 @@
         region: "{{ region }}"
         wait: false
       loop: "{{ instnace }}"
-      when: action =="create"
+      when: action =="delete"
