@@ -28,7 +28,7 @@
     - name: Create or update Route 53 A record
       amazon.aws.route53:
         state: present
-        zone: "{{ hosted_zone }}"
+        zone: "{{ domain_name }}"
         record: "{{item.item}}.{{ domain_name }}"
         type: A
         ttl: 1
@@ -40,7 +40,7 @@
     - name: delete Route 53 A record
       amazon.aws.route53:
         state: absent
-        zone: "{{ hosted_zone }}"
+        zone: "{{ domain_name }}"
         record: "{{item}}.{{ domain_name }}"
         type: A
         ttl: 1
