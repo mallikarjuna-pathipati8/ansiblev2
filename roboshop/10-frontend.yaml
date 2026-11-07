@@ -46,8 +46,8 @@
 
     - name: copy frontend service
       template:
-        src: roboshop.service.j2
-        dest: /etc/systemd/system/roboshop.service
+        src: roboshop.conf.j2
+        dest: /etc/systemd/system/roboshop.conf
 
     - name: restart frontend
       service:
