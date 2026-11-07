@@ -9,6 +9,7 @@
     instnace: ["mongodb", "redis"]
     action: create
     domain_name: "arjundaws2s.store"
+    hosted_zone: "Z08325212T4ZKWPRKKKQC"
 
   tasks:
     - name: Create EC2 instance
@@ -23,3 +24,15 @@
       loop: "{{ instnace }}"
       when: action =="create"
       register: ec2_output
+
+    - name: Create or update Route 53 A record
+      amazon.aws.route53:
+        state: present
+        zone: "{{ hosted_zone }}"
+        record: "{{item.item}}.{{ domain_name }}"
+        type: A
+        ttl: 300
+        value: "{{ ec2_output.instances[0].private_ip_address }}"
+        wait: true
+      loop: "{{ ec2_output.results }}"
+      when: action == "create"

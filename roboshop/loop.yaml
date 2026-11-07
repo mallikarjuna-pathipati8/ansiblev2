@@ -1,0 +1,30 @@
+- name: print eve or odd
+  hosts: local
+  connection: local
+  become: yes
+  gather_facts: true
+
+  vars:
+    packages:
+      - name: nginx
+        state: absent
+      - name: mysql
+        state: present
+      - name: htop
+        state: absent
+    listitem:
+      - nginx
+      - htop
+
+  tasks:
+    - name: Install Packages
+      package:
+        name: "{{ item.name }}"
+        state: "{{ item.state }}"
+      loop: "{{ packages }}"
+
+    - name: print  list item
+      debug:
+        name: print item
+        debug:
+          msg: "listitem[0]"
