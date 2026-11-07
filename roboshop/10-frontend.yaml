@@ -25,7 +25,7 @@
 
     - name: print directory content
       debug:
-      msg: "{{ directory_contents }}"
+        msg: "{{ directory_contents }}"
 
     - name: Delete the discovered contents
       ansible.builtin.file:
