@@ -55,7 +55,8 @@
         dest: /etc/systed/system/payment.service
 
     - name: daemon reload
-      systemd_service: daemon_reload:yes
+      systemd_service:
+        daemon_reload: true
 
     - name: enable and start payment
       service:
