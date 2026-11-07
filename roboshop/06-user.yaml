@@ -16,9 +16,9 @@
     - name: create system user
       user:
         name: roboshop
-        syste: true
         create_home: false
         home: /app
+        system: true
         shell: /sbin/nologin
         comment: "roboshop system user"
 
