@@ -5,15 +5,16 @@
     - name: enable maven 3.9
       command: dnf module enable maven:3.9 -y
 
-    - name: install maven and java 25
-      package:
+    - name: install maven and java25
+      dnf:
         name:
           - maven
           - java-25-openjdk-devel
+          - maven-openjdk25 # installing this so that we no need to set JAVA_HOME again
           - mysql
         state: present
 
-    - name: create system user
+    - name: create roboshop system user
       user:
         name: roboshop
         create_home: false
@@ -27,7 +28,7 @@
         path: /app
         state: absent
 
-    - name: remove existing shipping
+    - name: remove shipping.zip
       file:
         path: /tmp/shipping.zip
         state: absent
@@ -37,7 +38,7 @@
         path: /app
         state: directory
 
-    - name: download shipping project
+    - name: download shipping application
       get_url:
         url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/shipping-v4.zip
         dest: /tmp/shipping.zip
@@ -48,22 +49,24 @@
         dest: /app
         remote_src: yes
 
-    - name: maven version
+    - name: mvn version without JAVA_HOME
       command: mvn --version
       args:
         chdir: /app
-      register: mvn_version
+      register: mvn_default
 
-    - name: print mvn version
+    - name: print mvn version without JAVA_HOME
       debug:
-        msg: "{{ mvn_version }}"
+        msg: "{{ mvn_default.stdout_lines }}"
 
     - name: build shipping
       command: mvn clean package
       args:
         chdir: /app
+      # environment:
+      #   JAVA_HOME: "{{ java25.stdout | dirname | dirname  }}"
 
-    - name: move shipping file jar
+    - name: move shipping jar file
       command: mv target/shipping.jar shipping.jar
       args:
         chdir: /app
@@ -75,6 +78,34 @@
       tags:
         - mysql
 
-    - name: print the cities count
+    - name: print cities_count
       debug:
-        msg: "{{ cities_count  }}"
+        msg: "{{ cities_count }}"
+      tags:
+        - mysql
+
+    - name: load cities data into mysql
+      shell: mysql -h "{{ mysql_host }}" -u root -p{{ mysql_root_password }} < /app/db/master-data.sql
+      when: cities_count.rc != 0 or cities_count.stdout | int == 0
+      tags:
+        - mysql
+
+    - name: create app user in mysql
+      shell: mysql -h "{{ mysql_host }}" -u root -p{{ mysql_root_password }} < /app/db/app-user.sql
+      tags:
+        - mysql
+
+    - name: copy shipping service
+      template:
+        src: shipping.service.j2
+        dest: /etc/systemd/system/shipping.service
+
+    - name: daemon reload
+      systemd_service:
+        daemon_reload: true
+
+    - name: start and enable shipping
+      service:
+        name: shipping
+        state: restarted
+        enabled: yes
