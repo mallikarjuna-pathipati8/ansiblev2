@@ -28,7 +28,7 @@
     - name: Create or update Route 53 A record
       amazon.aws.route53:
         state: present
-        zone: "arjundaws92s.store"
+        zone: "{{ hosted_zone }}"
         record: "{{item.item}}.{{ domain_name }}"
         type: A
         ttl: 1
