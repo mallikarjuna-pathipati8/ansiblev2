@@ -31,8 +31,27 @@
         zone: "{{ hosted_zone }}"
         record: "{{item.item}}.{{ domain_name }}"
         type: A
-        ttl: 300
+        ttl: 1
         value: "{{ ec2_output.instances[0].private_ip_address }}"
-        wait: true
+        overwrite: true
       loop: "{{ ec2_output.results }}"
       when: action == "create"
+
+    - name: delete Route 53 A record
+      amazon.aws.route53:
+        state: absent
+        zone: "{{ hosted_zone }}"
+        record: "{{item}}.{{ domain_name }}"
+        type: A
+        ttl: 1
+        loop: "{{ instnace }}"
+      when: action == "delete"
+
+    - name: delete EC2 instance
+      amazon.aws.ec2_instance:
+        state: absent
+        name: "roboshop-{{ item }}"
+        region: "{{ region }}"
+        wait: false
+      loop: "{{ instnace }}"
+      when: action =="create"
