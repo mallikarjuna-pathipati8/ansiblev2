@@ -29,8 +29,8 @@
 
     - name: Delete the discovered contents
       ansible.builtin.file:
-      path: "{{ item.path }}"
-      state: absent
+        path: "{{ item.path }}"
+        state: absent
       loop: "{{ directory_contents.files }}"
 
     - name: download frontend application
