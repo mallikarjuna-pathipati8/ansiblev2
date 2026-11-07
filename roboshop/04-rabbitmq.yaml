@@ -10,12 +10,12 @@
       dnf:
         name:
           - erlang
-          - "{{ rabbitmq-server }}"
+          - "{{ app_name }}"
         state: present
 
     - name: start and enable rabbitmq server
       service:
-        name: "{{ rabbitmq-server }}"
+        name: "{{ app_name }}"
         state: started
         enabled: yes
     - name: create rabbitmq user
