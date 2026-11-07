@@ -6,6 +6,7 @@
       copy:
         src: rabbitmq.repo
         dest: /etc/yum.repos.d/rabbitmq.repo
+
     - name: install rabbitmq server
       dnf:
         name:
@@ -18,6 +19,7 @@
         name: "{{ app_name }}"
         state: started
         enabled: yes
+
     - name: create rabbitmq user
       community.rabbitmq.rabbitmq_user:
         user: roboshop
