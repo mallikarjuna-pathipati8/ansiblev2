@@ -16,7 +16,7 @@
         regexp: "12.0.0.1"
         replace: "0.0.0.0"
     - name: allow remote connections line in file with matched content
-      lineinile:
+      lineinfile:
         path: /etc/redis/redis.conf
         regexp: "^#?protected-mode yes"
         line: "protected-mode no"
