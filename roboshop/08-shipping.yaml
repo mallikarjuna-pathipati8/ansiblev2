@@ -45,7 +45,7 @@
       unarchive:
         src: /tmp/shipping.zip
         dest: /app
-        remore_src: yes
+        remote_src: yes
 
     - name: maven version
       command: java -version
