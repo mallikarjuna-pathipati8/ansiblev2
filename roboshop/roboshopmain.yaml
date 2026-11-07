@@ -8,7 +8,7 @@
     image_id: ami-0055977a6e828a4f4 # Replace with your target AMI ID
     instnace: ["mongodb", "redis"]
     action: create
-    domain_name: "arjundaws2s.store"
+    domain_name: "arjundaws92s.store"
     hosted_zone: "Z08325212T4ZKWPRKKKQC"
 
   tasks:
