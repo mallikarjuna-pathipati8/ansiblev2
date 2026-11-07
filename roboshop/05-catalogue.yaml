@@ -10,7 +10,7 @@
 
     - name: install nodejs 24
       package:
-        node: "{{ app_name }}"
+        name: "{{ app_name }}"
         state: present
 
     - name: check nodejs version
