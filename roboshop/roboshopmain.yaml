@@ -6,7 +6,19 @@
     region: us-east-1
     instance_type: t3.small
     image_id: ami-0055977a6e828a4f4 # Replace with your target AMI ID
-    instance: ["mongodb", "redis"]
+    instance:
+      [
+        "mongodb",
+        "redis",
+        "mysql",
+        "rabbitmq",
+        "catalogue",
+        "user",
+        "cart",
+        "shipping",
+        "payment",
+        "frontend",
+      ]
     ec2_action: create
     domain_name: "arjundaws92s.store"
     hosted_zone: "Z08325212T4ZKWPRKKKQC"
@@ -36,6 +48,18 @@
         overwrite: true
       loop: "{{ ec2_output.results }}"
       when: ec2_action == "create"
+
+    - name: create R53 record for frontend
+      amazon.aws.route53:
+        state: present
+        zone: "{{ domain_name }}"
+        record: "{{ domain_name }}" # daws92s.store points to frontend public IP
+        type: A
+        ttl: 1
+        value: "{{ item.instances[0].public_ip_address }}"
+        overwrite: true
+      loop: "{{ ec2_output.results }}"
+      when: ec2_action == "create" and item.item == "frontend"
 
     - name: delete Route 53 A record
       amazon.aws.route53:
