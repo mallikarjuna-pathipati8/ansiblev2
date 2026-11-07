@@ -52,7 +52,7 @@
     - name: copy payment service file
       template:
         src: payment.service.j2
-        dest: /etc/systed/system/payment.service
+        dest: /etc/systemd/system/payment.service
 
     - name: daemon reload
       systemd_service:
