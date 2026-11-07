@@ -48,7 +48,7 @@
         remote_src: yes
 
     - name: maven version
-      command: java -version
+      command: mvn --version
       args:
         chdir: /app
       register: mvn_version
