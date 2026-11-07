@@ -18,8 +18,8 @@
     - name: allow remote connections configure  MongodB Server /etc/mongod.conf
       replace:
         path: /etc/mongod.conf
-        regexp: 127.0.0.1
-        replace: 0.0.0.0
+        regexp: "127.0.0.1"
+        replace: "0.0.0.0"
     - name: Restart the Mongod service
       service:
         name: mongod
