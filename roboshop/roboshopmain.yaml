@@ -6,7 +6,7 @@
     region: us-east-1
     instance_type: t3.small
     image_id: ami-0055977a6e828a4f4 # Replace with your target AMI ID
-    instnace: ["mongodb", "redis"]
+    instance: ["mongodb", "redis"]
     ec2_action: create
     domain_name: "arjundaws92s.store"
     hosted_zone: "Z08325212T4ZKWPRKKKQC"
@@ -21,7 +21,7 @@
           - roboshop-common
           - "roboshop-{{ item }}"
         image_id: "{{ image_id }}"
-      loop: "{{ instnace }}"
+      loop: "{{ instance }}"
       when: ec2_action =="create"
       register: ec2_output
 
@@ -44,7 +44,7 @@
         record: "{{item}}.{{ domain_name }}"
         type: A
         ttl: 1
-      loop: "{{ instnace }}"
+      loop: "{{ instance }}"
       when: ec2_action == "delete"
 
     - name: delete EC2 instance
@@ -53,5 +53,5 @@
         name: "roboshop-{{ item }}"
         region: "{{ region }}"
         wait: false
-      loop: "{{ instnace }}"
+      loop: "{{ instance }}"
       when: ec2_action =="delete"
